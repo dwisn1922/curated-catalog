@@ -23,7 +23,7 @@ jobs:
           node-version: '20'
 
       - name: Install wrangler
-        run: npm install -g wrangler@latest
+        run: npm install -g wrangler@3.78.0
 
       - name: Deploy to Cloudflare Pages
         run: wrangler pages deploy . --project-name=curated-catalog --branch=main --commit-dirty=true --commit-message="$GITHUB_SHA"
