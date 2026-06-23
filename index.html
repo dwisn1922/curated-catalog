@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a4731">
+  <meta name="color-scheme" content="light">
+
+  <!-- Primary Meta -->
+  <title>Curated. — Koleksi pilihan dari Shopee, dikurasi mingguan</title>
+  <meta name="title" content="Curated. — Koleksi pilihan dari Shopee, dikurasi mingguan">
+  <meta name="description" content="151 produk pilihan dari brand lokal dan global di Shopee. Dikurasi berdasarkan rasa, bukan algoritma. Update setiap minggu.">
+  <meta name="keywords" content="shopee affiliate, fashion indonesia, skincare, hijab, tas, sepatu, curated shopping, produk lokal">
+  <meta name="author" content="Curated.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="language" content="Indonesian">
+  <meta name="geo.region" content="ID">
+  <meta name="rating" content="general">
+  <link rel="canonical" href="https://curated.id/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://curated.id/">
+  <meta property="og:title" content="Curated. — Koleksi pilihan dari Shopee, dikurasi mingguan">
+  <meta property="og:description" content="151 produk pilihan dari brand lokal dan global di Shopee. Dikurasi berdasarkan rasa, bukan algoritma. Update setiap minggu.">
+  <meta property="og:image" content="https://curated.id/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:site_name" content="Curated.">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://curated.id/">
+  <meta property="twitter:title" content="Curated. — Koleksi pilihan dari Shopee, dikurasi mingguan">
+  <meta property="twitter:description" content="151 produk pilihan dari brand lokal dan global di Shopee. Dikurasi berdasarkan rasa, bukan algoritma.">
+  <meta property="twitter:image" content="https://curated.id/og-image.jpg">
+
+  <!-- Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="script.js" as="script">
+  <link rel="preload" href="data.json" as="fetch" crossorigin>
+  <link rel="preload" href="style.css" as="style">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Privacy-friendly analytics (no cookies, no personal data) -->
+  <script defer data-domain="curated.id" src="https://plausible.io/js/script.js"></script>
+
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+
+  <!-- Schema.org JSON-LD: Organization + WebSite + ItemList + BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://curated.id/#organization",
+        "name": "Curated.",
+        "url": "https://curated.id/",
+        "logo": "https://curated.id/favicon.svg",
+        "description": "Koleksi produk pilihan dari brand lokal dan global di Shopee. Dikurasi berdasarkan rasa, bukan algoritma.",
+        "sameAs": []
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://curated.id/#website",
+        "url": "https://curated.id/",
+        "name": "Curated.",
+        "description": "Koleksi produk pilihan dari Shopee, dikurasi mingguan",
+        "publisher": {"@id": "https://curated.id/#organization"},
+        "inLanguage": "id-ID",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://curated.id/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://curated.id/#collection",
+        "name": "Curated Weekly Collection",
+        "description": "Koleksi 151 produk pilihan dari Shopee, dikurasi mingguan",
+        "numberOfItems": 151,
+        "itemListElement": [
+          {"@type":"ListItem","position":1,"url":"https://curated.id/#featured","name":"Featured Picks"},
+          {"@type":"ListItem","position":2,"url":"https://curated.id/#koleksi","name":"All Items"}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type":"ListItem","position":1,"name":"Home","item":"https://curated.id/"},
+          {"@type":"ListItem","position":2,"name":"Featured","item":"https://curated.id/#featured"},
+          {"@type":"ListItem","position":3,"name":"Koleksi","item":"https://curated.id/#koleksi"}
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Skip link for a11y -->
+  <a href="#koleksi" class="skip-link">Langsung ke koleksi</a>
+
+  <!-- TOPBAR -->
+  <nav class="topbar" aria-label="Top bar">
+    <div class="topbar-inner">
+      <a href="/" class="topbar-mark" aria-label="Curated homepage">C U R A T E D .</a>
+      <span class="topbar-sep">·</span>
+      <span class="topbar-meta" id="weekLabel">Minggu ke-26, 2026</span>
+      <span class="topbar-sep">·</span>
+      <span class="topbar-meta">151 barang di kurasi</span>
+    </div>
+  </nav>
+
+  <main>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow">Shopee Affiliate · Weekly Edition</div>
+        <h1 class="hero-headline">
+          Hal-hal yang<br>
+          <em>layak dipakai</em>,<br>
+          dimiliki, dan diceritakan.
+        </h1>
+        <p class="hero-sub">
+          Kurasi mingguan dari brand lokal dan global di Shopee. Dipilih berdasarkan rasa, bukan algoritma. Setiap barang di sini adalah sesuatu yang akan kami pakai sendiri.
+        </p>
+        <div class="hero-actions">
+          <a href="#koleksi" class="btn-primary">Lihat Koleksi</a>
+          <a href="#manifesto" class="btn-ghost">Cara Kami Memilih</a>
+        </div>
+      </div>
+      <div class="hero-visual" id="heroVisual" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <!-- MARQUEE: category strip -->
+  <section class="strip" aria-label="Kategori">
+    <div class="strip-track" id="stripTrack"></div>
+  </section>
+
+  <!-- FEATURED: editorial asymmetric -->
+  <section class="featured" id="featured">
+    <div class="section-head">
+      <div class="section-eyebrow">Pilihan Editor</div>
+      <h2 class="section-title">Tujuh barang yang<br><em>mencuri perhatian</em> minggu ini.</h2>
+    </div>
+    <div class="featured-grid" id="featuredGrid"></div>
+  </section>
+
+  <!-- FULL COLLECTION -->
+  <section class="koleksi" id="koleksi">
+    <div class="section-head section-head-row">
+      <div>
+        <h2 class="section-title">Semua barang,<br>diurutkan dari yang tertinggi.</h2>
+      </div>
+      <div class="filter-controls">
+        <div class="search-wrap">
+          <input type="search" id="search" placeholder="Cari nama atau brand" autocomplete="off" aria-label="Cari produk">
+        </div>
+        <div class="chips" id="chips" role="tablist" aria-label="Filter kategori"></div>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="priceMin" class="filter-label">Harga min</label>
+            <input type="number" id="priceMin" placeholder="0" min="0" step="5000" aria-label="Harga minimum">
+          </div>
+          <div class="filter-group">
+            <label for="priceMax" class="filter-label">Harga max</label>
+            <input type="number" id="priceMax" placeholder="999999" min="0" step="5000" aria-label="Harga maksimum">
+          </div>
+          <div class="sort-wrap">
+            <label for="sort" class="sort-label">Urut</label>
+            <select id="sort" aria-label="Urutkan">
+              <option value="price_desc">Harga tertinggi</option>
+              <option value="price_asc">Harga terendah</option>
+              <option value="sold_desc">Paling laris</option>
+              <option value="name">Nama A-Z</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="count-row">
+      <span id="countLabel">151 barang</span>
+      <span class="count-sep">·</span>
+      <span class="count-meta">diperbarui 24 Juni 2026</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>
+      <div class="empty-mark">∅</div>
+      <p>Tidak ada yang cocok dengan pencarian Anda.</p>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" id="manifesto">
+    <div class="manifesto-inner">
+      <p class="manifesto-body">
+        Kami tidak menerima bayaran dari brand untuk tampil di sini. Barang dipilih karena alasan sederhana: kami menyukai desainnya, bahannya terasa benar, atau harganya proporsional dengan apa yang ditawarkan. Kalau suatu barang tidak lagi memenuhi standar, kami akan menghapusnya. Tautan belanja menggunakan program afiliasi Shopee — saat Anda membeli, kami mendapat komisi kecil tanpa biaya tambahan untuk Anda. Ini yang menopang kurasi mingguan kami.
+      </p>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter" id="newsletter">
+    <div class="newsletter-inner">
+      <div class="newsletter-eyebrow">Langganan</div>
+      <h2 class="newsletter-title">Dapatkan kurasi<br>mingguan <em>lewat email</em>.</h2>
+      <p class="newsletter-sub">10 produk pilihan, dikirim setiap Jumat pagi. Tanpa spam, bisa berhenti kapan saja.</p>
+      <form class="newsletter-form" id="newsletterForm" novalidate>
+        <input type="email" id="newsletterEmail" placeholder="email@domain.com" required aria-label="Email">
+        <button type="submit" class="btn-primary">Daftar</button>
+      </form>
+      <div class="newsletter-msg" id="newsletterMsg" hidden></div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-mark">C U R A T E D .</div>
+          <div class="footer-meta">Kurasi mingguan · Shopee Affiliate</div>
+          <div class="footer-meta footer-meta-quiet">© 2026 · Dibuat dengan rasa, bukan algoritma.</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Halaman</div>
+          <a href="#koleksi" class="footer-link">Koleksi</a>
+          <a href="#manifesto" class="footer-link">Tentang</a>
+          <a href="#newsletter" class="footer-link">Langganan</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Legal</div>
+          <a href="privacy.html" class="footer-link">Kebijakan Privasi</a>
+          <a href="terms.html" class="footer-link">Syarat & Ketentuan</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Kontak</div>
+          <a href="contact.html" class="footer-link">Hubungi Kami</a>
+          <a href="mailto:hello@curated.id" class="footer-link">hello@curated.id</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile CTA -->
+  <div class="sticky-cta" id="stickyCta" aria-hidden="true">
+    <div class="sticky-cta-inner">
+      <div class="sticky-cta-meta">151 barang di kurasi</div>
+      <a href="#koleksi" class="btn-primary btn-sm">Lihat Koleksi</a>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

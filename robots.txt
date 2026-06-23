@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /sw.js
+Disallow: /sw.js.map
+
+Sitemap: https://curated.id/sitemap.xml

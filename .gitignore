@@ -1,0 +1,23 @@
+# Build artifacts
+_deploy.zip
+shopee-affiliate.zip
+*.zip
+
+# OS junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Backups
+*.bak
+*.bak.*
+*~
+
+# Editor
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
