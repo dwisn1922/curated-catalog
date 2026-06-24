@@ -33,7 +33,7 @@ from datetime import datetime
 from PIL import Image
 from patchright.sync_api import sync_playwright
 
-REPO_DIR = Path(__file__).parent
+REPO_DIR = Path(__file__).parent.parent
 DATA_JSON = REPO_DIR / "data.json"
 IMAGES_DIR = REPO_DIR / "images"
 CATEGORY = "general"
@@ -399,17 +399,33 @@ def main():
     new_products = []
     skipped = 0
     failed = 0
+    BROWSER_RESTART_EVERY = 30  # restart Chromium every N products to avoid OOM
 
-    with sync_playwright() as p:
+    def _open_browser():
         browser = p.chromium.launch(headless=True, channel="chromium")
         ctx = browser.new_context(
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
             locale="id-ID"
         )
-        page = ctx.new_page()
+        return browser, ctx.new_page()
+
+    with sync_playwright() as p:
+        browser, page = _open_browser()
+        processed_since_restart = 0
 
         for i, row in enumerate(rows[:args.limit]):
+            # Periodic browser restart to release memory
+            if processed_since_restart >= BROWSER_RESTART_EVERY:
+                log(f"  [restart browser — processed {processed_since_restart}]")
+                try:
+                    browser.close()
+                except Exception:
+                    pass
+                browser, page = _open_browser()
+                processed_since_restart = 0
+
             log(f"\n[{i+1}/{min(len(rows), args.limit)}] {row['link'][:80]}")
+            processed_since_restart += 1
             shopee = resolve_shopee_link(row['link'])
             if not shopee:
                 log("  resolve fail, skip")
@@ -430,7 +446,19 @@ def main():
                 continue
             log(f"  item_id={item_id}, query='{query}'")
 
-            tkp = tkp_search_and_download(page, query, item_id)
+            try:
+                tkp = tkp_search_and_download(page, query, item_id)
+            except Exception as e:
+                log(f"  TKP crash ({type(e).__name__}: {str(e)[:80]}), restarting browser")
+                try:
+                    browser.close()
+                except Exception:
+                    pass
+                browser, page = _open_browser()
+                processed_since_restart = 0
+                failed += 1
+                continue
+
             if not tkp:
                 log("  TKP fail, skip")
                 failed += 1

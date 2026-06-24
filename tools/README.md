@@ -2,29 +2,50 @@
 
 One-shot automation to add products and re-categorize the catalog.
 
-## Quick start
+## Quick start (NEW: csv_to_data — no browser needed)
 
 ```bash
-# 1. Drop your new products into products.csv
+# 1. Drop your new products into products.csv (auto-generated from Shopee exports)
 # CSV format: link,category,name_hint
 #   - link:       required, Shopee short URL (https://s.shopee.co.id/xxxxxxxx)
 #   - category:   optional, auto-classified from name if blank
-#   - name_hint:  optional, used to query Shopee when the short URL is opaque
+#   - name_hint:  optional
 $ nano products.csv
 
-# 2. Run the pipeline
-$ ./tools/auto_update.sh --csv products.csv
+# 2. Run the lightweight pipeline (no browser, no TKP scraping, fast)
+$ python3 tools/csv_to_data.py products.csv \
+    --csv-source /path/to/Shopee_Export_1.csv \
+    --csv-source /path/to/Shopee_Export_2.csv \
+    [...repeat --csv-source per file...]
+$ python3 tools/normalize_entries.py
+$ python3 tools/recategorize.py
 
-# 3. Wait ~1-2 min for CF Pages to deploy, then verify
+# 3. Commit + push
+$ git add -A && git commit -m "feat: import N new products"
+$ git push origin main
+
+# 4. Wait ~1-2 min for CF Pages to deploy, then verify
 $ curl -s https://curated.my.id/ | grep -oE "[0-9]+ barang" | head -1
+```
+
+## Legacy pipeline (browser-based — has OOM issues)
+
+The legacy `add_from_csv.py` uses Tokopedia web search + Shopee via browser. It works for
+small batches but crashes after ~50-100 products due to Chromium OOM. `csv_to_data.py` is
+the new default; it's pure Python and reads from your existing Shopee export CSVs.
+
+```bash
+# Legacy path — only use if you need image scraping
+$ ./tools/auto_update.sh --csv products.csv
 ```
 
 ## Pipeline stages
 
 | Stage | Tool | What it does |
 |-------|------|--------------|
-| Import | `tools/add_from_csv.sh products.csv` | Resolves Shopee short URL → scrape TKP API → fetch product details + image → add to `data.json` with auto-categorization |
-| Re-categorize | `tools/recategorize.py --apply` | Audits all 154 products, applies classifier + hand-curated rules, shows diff before write |
+| Import | `tools/csv_to_data.py products.csv --csv-source ...` | Reads Shopee export CSVs, builds data.json entries (no browser, no image scraping — images stay empty until separate pipeline adds them) |
+| Normalize | `tools/normalize_entries.py` | Converts raw Shopee fields (price, sales, shop) to frontend-friendly format (price_label, sold_label, image_url, etc.) |
+| Re-categorize | `tools/recategorize.py` | Audits all products, applies classifier + hand-curated rules |
 | Deploy | `git push origin main` | CF Pages auto-deploys in 1-2 min |
 
 ## CSV format
@@ -36,28 +57,21 @@ https://s.shopee.co.id/def67890,clothing,Daster Batik
 https://s.shopee.co.id/ghi11112,,
 ```
 
-- `link` — Shopee affiliate short URL (resolved via `curl -sLI`)
+- `link` — Shopee affiliate short URL
 - `category` — leave empty for auto-classify, or set explicitly (one of: `beauty`, `clothing`, `bags`, `shoes`, `hijab`, `sleepwear`, `gadget`, `home`, `automotive`, `kids`, `baby`, `beauty_storage`, `accessories`)
-- `name_hint` — only used when Shopee short URL doesn't carry the product name in redirect
-
-## Cron (optional)
-
-Run weekly:
-
-```cron
-0 9 * * 1  cd /home/ubuntu/shopee-web/shopee-affiliate && ./tools/auto_update.sh --csv products.csv 2>&1 | tee -a logs/auto_update.log
-```
+- `name_hint` — optional hint for ambiguous names
 
 ## Available categories (13)
 
-`beauty` (32) · `clothing` (23) · `bags` (54) · `shoes` (18) · `hijab` (6) · `kids` (6) · `gadget` (4) · `sleepwear` (3) · `automotive` (3) · `home` (2) · `baby` (1) · `beauty_storage` (1) · `accessories` (1)
+`beauty` · `clothing` · `bags` · `shoes` · `hijab` · `kids` · `gadget` · `sleepwear` · `automotive` · `home` · `baby` · `beauty_storage` · `accessories`
 
 ## Tools
 
 | Script | Purpose |
 |--------|---------|
-| `tools/auto_update.sh` | One-shot pipeline (this folder) |
-| `tools/add_from_csv.sh` | Wrapper for `add_from_csv.py` |
-| `tools/add_from_csv.py` | CSV importer (uses patchright browser) |
+| `tools/auto_update.sh` | One-shot pipeline (legacy browser path) |
+| `tools/csv_to_data.py` | **NEW** — pure Python importer, reads Shopee export CSVs directly |
+| `tools/normalize_entries.py` | **NEW** — converts new imports to frontend schema |
+| `tools/add_from_csv.py` | Legacy CSV importer (uses patchright browser, OOM-prone) |
 | `tools/recategorize.py` | Audit + re-categorize existing data (idempotent) |
 | `tools/classifier.py` | Rule-based name → category classifier |

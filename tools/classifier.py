@@ -27,7 +27,8 @@ def classify(p: dict) -> str:
     ]):
         return "automotive"
 
-    # 2. Gadget
+    # 2. Gadget — checked first (before home, before beauty)
+    # Phone brands + model keywords (case-insensitive)
     if any(kw in name for kw in [
         "smartband", "smart band", " mi band", "fitness band",
         "smartwatch", "smart watch", " mi watch", "amazfit",
@@ -38,6 +39,23 @@ def classify(p: dict) -> str:
         "mouse wireless", "mouse gaming", "keyboard mekanik",
         "stand holder phone", "phone stand", "phone holder",
     ]):
+        return "gadget"
+    # Phone brand/model names — word-boundary regex to avoid false positives
+    if re.search(r"\b(iphone|ip\s?\d+\s?(pro|plus|max|mini)?|ipad|ipados)\b", name):
+        return "gadget"
+    if re.search(r"\b(samsung|galaxy\s?(s|a|z|note|m|f)?\d*|xiaomi|redmi|poco|huawei|honor|oppo|realme|vivo|infinix|tecno|lenovo\s?(motopad|tab|legion)?|asus(?:\s+(?:zenfone|rog|tuf))?)\b", name):
+        return "gadget"
+    if re.search(r"\b(garmin|fitbit|apple\s+watch|amazfit|g-shock|casio\s+(ga|gm|mts|dw|mtv))\b", name):
+        return "gadget"
+    if re.search(r"\b(macbook|ideapad|vivobook|thinkpad|surface\s+(pro|go|laptop))\b", name):
+        return "gadget"
+    if re.search(r"\b(kipas\s+(senter|portabel|mini|rechargeable|angin|genggam|tangan|usb)|kipas\s+angin\s+(mini|portabel|usb)|fan\s+(mini|portable|usb|rechargeable))\b", name):
+        return "gadget"
+    if re.search(r"\b(gps\s+(mobil|motor|tracker|tracking))\b", name):
+        return "automotive"  # GPS tracker for vehicle
+    if re.search(r"\b(hair\s+dryer|hairdryer|pengering\s+rambut)\b", name):
+        return "home"  # personal care appliance
+    if re.search(r"\b(speaker\s+(portable|wireless|bt|jbl|harman|sony|bose))\b", name):
         return "gadget"
 
     # 3. Beauty (incl perfume)
