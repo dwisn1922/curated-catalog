@@ -39,6 +39,22 @@ IMAGES_DIR = REPO_DIR / "images"
 CATEGORY = "general"
 EDITORIAL_PLACEHOLDER = "Pilihan menarik di katalog CURATED. Cek halaman produk untuk detail harga, rating, dan review."
 
+# Classifier integration — auto-categorize when CSV has no hint
+TOOLS_DIR = REPO_DIR / "tools"
+try:
+    sys.path.insert(0, str(REPO_DIR))
+    from tools.classifier import classify as _classify_raw
+    def _classify(name: str) -> str:
+        return _classify_raw({"name": name or ""})
+    HAS_CLASSIFIER = True
+except Exception as _e:
+    HAS_CLASSIFIER = False
+    def _classify(name: str) -> str:  # type: ignore
+        return "general"
+
+# Categories that should be replaced by auto-classification
+_NON_USER_CATEGORIES = {"", "general", "auto", "?"}
+
 # ---------- helpers ----------
 
 def log(*a):
@@ -294,6 +310,11 @@ def tkp_search_and_download(page, query: str, item_id: str) -> dict | None:
 def build_product_entry(item_id: str, shopee: dict, tkp: dict, category: str, link: str) -> dict:
     name = tkp['name']
     price = tkp['price']
+    # Auto-classify when CSV left it blank/general
+    final_category = category
+    if (not final_category) or final_category.lower() in _NON_USER_CATEGORIES:
+        final_category = _classify(name)
+        log(f"  auto-classify: '{name[:50]}' → {final_category}")
     return {
         "id": item_id,
         "name": name,
@@ -302,7 +323,7 @@ def build_product_entry(item_id: str, shopee: dict, tkp: dict, category: str, li
         "sold": tkp['sold'],
         "sold_label": tkp['sold_label'],
         "store": tkp['store'],
-        "category": category or "general",
+        "category": final_category or "general",
         "commission_pct": "5%",
         "commission_idr": f"Rp{int(price * 0.05):,}".replace(',', '.'),
         "url": link,

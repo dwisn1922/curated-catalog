@@ -62,15 +62,27 @@ def classify(p: dict) -> str:
     ]):
         return "hijab"
 
-    # 5. Baby
+    # 4b. Beauty storage (rak/organizer kosmetik) — checked before clothing
     if any(kw in name for kw in [
-        "bayi", "baby ", "paseo baby", "tisu bayi", "popok", "diaper", "dot bayi", "botol susu",
+        "rak kosmetik", "rak makeup", "makeup organizer", "beauty organizer",
+        "cosmetic organizer", "rak lipstick", "tempat kosmetik", "kotak kosmetik",
+        "tas kosmetik", "pouch kosmetik", "case kosmetik",
+    ]):
+        return "beauty_storage"
+
+    # 5. Baby (incl ASI, breast pump)
+    if any(kw in name for kw in [
+        "bayi", "baby ", "paseo baby", "tisu bayi", "popok", "diaper", "dot bayi",
+        "botol susu", "asi ", "pompa asi", "pompa air susu", "breast pump",
+        "baby bottle", "baby bottle", "sterilizer bayi", "baby walker", "stroller",
     ]):
         return "baby"
 
-    # 6. Kids (toys)
+    # 6. Kids (incl pakaian anak, mainan)
     if any(kw in name for kw in [
-        "mainan", "toys", "pesawat terbang", "remote control", "mobil-mobilan", "boneka", "puzzle",
+        "mainan", "toys", "pesawat terbang", "remote control", "mobil-mobilan",
+        "boneka", "puzzle", " anak ", "baju anak", "pakaian anak",
+        "kids ", "kid ", "children ", "bayi laki", "bayi perempuan",
     ]):
         return "kids"
 
@@ -103,13 +115,32 @@ def classify(p: dict) -> str:
     ]):
         return "occasion"
 
-    # 11. Home (incl small appliances)
-    if any(kw in name for kw in [
-        "jemuran", "gantungan baju", "rak sepatu", "lemari pakaian",
-        "meja lipat", "kursi lipat", "lampu led",
+    # 11. Home (incl small appliances, furniture, lighting)
+    # Use regex word-boundary to avoid false positives (e.g. "meja" inside "kemeja")
+    def _has_word(name: str, kw: str) -> bool:
+        """Match kw as a whole word in name (case-insensitive)."""
+        return bool(re.search(r"\b" + re.escape(kw) + r"\b", name))
+
+    HOME_KW_BARE = [
+        "kursi", "chair", "furnitur", "furniture", "meja",
+        "lampu tidur", "lampu led", "lampu meja", "lampu dinding",
         "kipas", "fan mini", "setrika",
         "deterjen", "sabun cuci piring", "sabun lantai",
-    ]):
+        "botol minum", "tumbler", "thermos", "tempat minum",
+        "rak piring", "rak buku", "shelf",
+        "kasur", "bantal", "sprei", "bed cover",
+        "ember", "gayung", "tempat sampah",
+    ]
+    HOME_KW_SUBSTR = [
+        "jemuran", "gantungan baju", "rak sepatu", "lemari pakaian",
+        "meja lipat", "kursi lipat",
+    ]
+    if any(kw in name for kw in HOME_KW_SUBSTR):
+        return "home"
+    if any(_has_word(name, kw) for kw in HOME_KW_BARE):
+        return "home"
+    # "rak " (with space) — only match as separate word "rak"
+    if _has_word(name, "rak"):
         return "home"
 
     # 12. Accessories
