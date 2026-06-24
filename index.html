@@ -58,9 +58,6 @@
   <!-- Privacy-friendly analytics (no cookies, no personal data) -->
   <script defer data-domain="curated.my.id" src="https://plausible.io/js/script.js"></script>
 
-  <!-- MGID ad network (publisher ID placeholder — swap with yours from mgid.com dashboard) -->
-  <script>(function(w,d,o){w[o]=w[o]||function(){(w[o].q=w[o].q||[]).push(arguments)};w[o].l=1*new Date();})(window,document,'mgid');</script>
-
   <!-- Service Worker registration -->
   <script>
     if ('serviceWorker' in navigator) {
@@ -277,10 +274,6 @@
       <a href="#koleksi" class="btn-primary btn-sm">Lihat Koleksi</a>
     </div>
   </div>
-
-  <!-- MGID in-feed widget container (rendered via JS in product grid) -->
-  <ins class="mgid-widget" id="mgid-widget-footer" data-widget-id="WIDGET_ID_FOOTER" style="display:none"></ins>
-  <script>(mgid=window.mgid||[]).push({widget: 'WIDGET_ID_FOOTER', renderer: 'default', size: 'default'});</script>
 
   <script src="script.js" defer></script>
 </body>
