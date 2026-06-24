@@ -80,11 +80,11 @@ def classify(p: dict) -> str:
     ]):
         return "hijab"
 
-    # 4b. Beauty storage (rak/organizer kosmetik) — checked before clothing
+    # 4b. Beauty storage (rak/organizer kosmetik) — checked before clothing.
+    # Note: "tas/pouch/case kosmetik" REMOVED — those are BAGS (fall through to #8).
     if any(kw in name for kw in [
         "rak kosmetik", "rak makeup", "makeup organizer", "beauty organizer",
         "cosmetic organizer", "rak lipstick", "tempat kosmetik", "kotak kosmetik",
-        "tas kosmetik", "pouch kosmetik", "case kosmetik",
     ]):
         return "beauty_storage"
 
