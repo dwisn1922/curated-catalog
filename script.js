@@ -282,6 +282,39 @@
         </article>
       `;}).join('');
 
+      // Inject MGID in-feed widgets every 8 products (after the 8th, 16th, 24th card)
+      // Skip injection if MGID publisher ID is still placeholder (not configured)
+      const MGID_WIDGET_ID = 'WIDGET_ID_INFEED';  // swap with real widget ID from mgid.com
+      const MGID_PLACEHOLDER = 'WIDGET_ID_INFEED';
+      if (MGID_WIDGET_ID !== MGID_PLACEHOLDER && typeof window.mgid !== 'undefined') {
+        const cards = grid.querySelectorAll('.card');
+        const insertPositions = [];
+        for (let i = 7; i < cards.length; i += 8) insertPositions.push(i);
+        insertPositions.reverse().forEach(idx => {
+          const targetCard = cards[idx];
+          if (!targetCard) return;
+          const ins = document.createElement('ins');
+          ins.className = 'mgid-widget mgid-infeed';
+          ins.setAttribute('data-widget-id', MGID_WIDGET_ID);
+          ins.style.display = 'block';
+          ins.style.gridColumn = '1 / -1';
+          ins.style.minHeight = '240px';
+          ins.style.margin = '0.75rem 0';
+          targetCard.parentNode.insertBefore(ins, targetCard.nextSibling);
+          if (window.mgid) {
+            window.mgid.push({ widget: MGID_WIDGET_ID, renderer: 'default', size: 'default' });
+          }
+        });
+        // Show footer widget too (below grid)
+        const footer = document.getElementById('mgid-widget-footer');
+        if (footer) {
+          footer.style.display = 'block';
+          footer.style.gridColumn = '1 / -1';
+          footer.style.minHeight = '90px';
+          footer.style.margin = '2rem auto 1rem';
+        }
+      }
+
       // Bind affiliate click tracking
       grid.querySelectorAll('.card-link').forEach(a => {
         a.addEventListener('click', () => {
