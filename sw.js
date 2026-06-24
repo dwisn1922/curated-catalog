@@ -1,5 +1,5 @@
 /* Curated. — Service Worker (basic cache + offline fallback) */
-const CACHE = 'curated-v1';
+const CACHE = 'curated-v2';
 const ASSETS = [
   '/',
   '/index.html',
