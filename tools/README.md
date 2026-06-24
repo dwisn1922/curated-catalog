@@ -1,52 +1,63 @@
-# Curated Catalog Tools
+# CURATED. Product Update Pipeline
 
-## `add_from_csv.py` — Add products from CSV → auto-deploy
+One-shot automation to add products and re-categorize the catalog.
 
-Takes a CSV of Shopee affiliate links and adds them to the catalog with images sourced from Tokopedia. Pushes to GitHub → GitHub Actions → auto-deploys to Cloudflare Pages.
-
-### Quick start
+## Quick start
 
 ```bash
-# 1. Create CSV
-cat > products.csv << 'CSV'
-link,category,name_hint
-https://s.shopee.co.id/XXXXX,skincare,
-https://s.shopee.co.id/YYYYY,fashion,Vitamin C serum
-CSV
+# 1. Drop your new products into products.csv
+# CSV format: link,category,name_hint
+#   - link:       required, Shopee short URL (https://s.shopee.co.id/xxxxxxxx)
+#   - category:   optional, auto-classified from name if blank
+#   - name_hint:  optional, used to query Shopee when the short URL is opaque
+$ nano products.csv
 
-# 2. Dry-run first to see what would happen
-./add_from_csv.sh --dry-run products.csv
+# 2. Run the pipeline
+$ ./tools/auto_update.sh --csv products.csv
 
-# 3. Run for real (commits + pushes → auto-deploy in ~30s)
-./add_from_csv.sh products.csv
+# 3. Wait ~1-2 min for CF Pages to deploy, then verify
+$ curl -s https://curated.my.id/ | grep -oE "[0-9]+ barang" | head -1
 ```
 
-### CSV columns
+## Pipeline stages
 
-| Column | Required | Default | Description |
-|--------|----------|---------|-------------|
-| `link` | ✅ | — | Shopee affiliate short link (`s.shopee.co.id/xxxxx`) |
-| `category` | ❌ | `general` | Product category (skincare, fashion, dll) |
-| `name_hint` | ❌ | (extracted from URL slug) | Override search query for Tokopedia |
+| Stage | Tool | What it does |
+|-------|------|--------------|
+| Import | `tools/add_from_csv.sh products.csv` | Resolves Shopee short URL → scrape TKP API → fetch product details + image → add to `data.json` with auto-categorization |
+| Re-categorize | `tools/recategorize.py --apply` | Audits all 154 products, applies classifier + hand-curated rules, shows diff before write |
+| Deploy | `git push origin main` | CF Pages auto-deploys in 1-2 min |
 
-### What it does
+## CSV format
 
-1. Resolves Shopee short link → extracts item ID + slug
-2. Searches Tokopedia with cleaned query
-3. Picks best match (name similarity ≥ 0.25)
-4. Downloads thumbnail (200×200) → upscales to 800×800 (`jpg` + `webp` + 400w webp)
-5. Builds product entry (price, sold, store, etc. from Tokopedia)
-6. Deduplicates against existing `data.json`
-7. Updates `data.json`, `index.html` count, `sitemap.xml` lastmod
-8. Git commits + pushes → GitHub Actions → Cloudflare Pages (≈ 30s)
+```csv
+link,category,name_hint
+https://s.shopee.co.id/abc12345,,Rak Kosmetik Acrylic
+https://s.shopee.co.id/def67890,clothing,Daster Batik
+https://s.shopee.co.id/ghi11112,,
+```
 
-### Requirements
+- `link` — Shopee affiliate short URL (resolved via `curl -sLI`)
+- `category` — leave empty for auto-classify, or set explicitly (one of: `beauty`, `clothing`, `bags`, `shoes`, `hijab`, `sleepwear`, `gadget`, `home`, `automotive`, `kids`, `baby`, `beauty_storage`, `accessories`)
+- `name_hint` — only used when Shopee short URL doesn't carry the product name in redirect
 
-- `/home/ubuntu/.hermes/hermes-agent/venv/bin/python3` (has `patchright` + `Pillow`)
-- Git repo with `workflow` scope PAT configured
+## Cron (optional)
 
-### Notes
+Run weekly:
 
-- TKP image CDN signs URLs to the IP — image download goes through the browser context.
-- Uses `patchright` (anti-detection fork of Playwright).
-- Server IP may be flagged at Tokopedia; rate limit naturally via search.
+```cron
+0 9 * * 1  cd /home/ubuntu/shopee-web/shopee-affiliate && ./tools/auto_update.sh --csv products.csv 2>&1 | tee -a logs/auto_update.log
+```
+
+## Available categories (13)
+
+`beauty` (32) · `clothing` (23) · `bags` (54) · `shoes` (18) · `hijab` (6) · `kids` (6) · `gadget` (4) · `sleepwear` (3) · `automotive` (3) · `home` (2) · `baby` (1) · `beauty_storage` (1) · `accessories` (1)
+
+## Tools
+
+| Script | Purpose |
+|--------|---------|
+| `tools/auto_update.sh` | One-shot pipeline (this folder) |
+| `tools/add_from_csv.sh` | Wrapper for `add_from_csv.py` |
+| `tools/add_from_csv.py` | CSV importer (uses patchright browser) |
+| `tools/recategorize.py` | Audit + re-categorize existing data (idempotent) |
+| `tools/classifier.py` | Rule-based name → category classifier |
