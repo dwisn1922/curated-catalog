@@ -34,9 +34,9 @@
   // Marquee strip: populate + duplicate for seamless loop
   const stripTrack = document.getElementById('stripTrack');
   if (stripTrack) {
-    const items = ['Pakaian','Tas','Kecantikan','Hijab','Sepatu','Rumah','Aksesoris','Sleepwear','Sport','Kesehatan'];
-    const build = () => items.map(i => `<span class="strip-item">${i}</span><span class="strip-dot">●</span>`).join('');
-    stripTrack.innerHTML = build() + build();
+  const stripItems = ['Pakaian','Tas','Kecantikan','Hijab','Sepatu','Aksesoris','Gadget','Otomotif','Rumah','Bayi'];
+  const build = () => stripItems.map(i => `<span class="strip-item">${i}</span><span class="strip-dot">●</span>`).join('');
+  stripTrack.innerHTML = build() + build();
   }
 
   // Load data
@@ -67,12 +67,17 @@
     clothing: 'Pakaian',
     bags: 'Tas',
     beauty: 'Kecantikan',
+    beauty_storage: 'Beauty Storage',
     shoes: 'Sepatu',
     accessories: 'Aksesoris',
     hijab: 'Hijab',
     home: 'Rumah',
     sleepwear: 'Sleepwear',
-    occasion: 'Occasion'
+    occasion: 'Occasion',
+    gadget: 'Gadget',
+    automotive: 'Otomotif',
+    kids: 'Kids',
+    baby: 'Bayi'
   }[c] || c);
 
   // Analytics helper (Plausible + custom event)
